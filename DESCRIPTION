@@ -1,0 +1,22 @@
+Package: edata
+Type: Package
+Title: API wrapper for E-Data (spending.gov.ua)
+Description: This package designed to load data on Ukrainian public finance transactions (spending.gov.ua).
+Version: 0.1.0
+Date: 2017-11-29
+Authors@R: c(person("Pavlo Myronov", "name", role=c("aut"), email="paul.myronov@gmail.com"))
+Author: yourname [aut, cre]
+Maintainer: Pavlo Myronov <paul.myronov@gmail.com>
+URL: https://github.com/yourgithub/edata
+BugReports: https://github.com/yourgithub/edata/issues
+License: MIT + file LICENSE
+Depends:
+    R (>= 3.0.0)
+Imports:
+    readr,
+    httr
+Suggests:
+    covr,
+    testthat
+RoxygenNote: 6.0.1
+Roxygen: list(markdown = TRUE)
