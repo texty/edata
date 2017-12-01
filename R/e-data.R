@@ -33,7 +33,7 @@ download_organisations <- function(folder = ".") {
   url <- "http://api.spending.gov.ua/api/v2/stat/organizations/csv"
   download.file(url, "org_file.zip")
   file_path <- unzip("org_file.zip")
-  organisations <- read_delim(file_path, skip = 1, 
+  organisations <- read.delim(file_path, skip = 1, 
                           locale = locale(encoding = "Windows-1251"), delim = ";",
                           col_types = org_col_type)
   file.remove(c("org_file.zip", file_path))
@@ -76,7 +76,7 @@ request2df <- function(url, q = list()) {
 #' orgs_ids()
 orgs_ids <- function(organizations, filename = "organizations.csv") {
   if (file.exists(filename)) {
-    orgs <- read_csv(filename, col_types = org_col_type)
+    orgs <- read.csv(filename, col_types = org_col_type)
     org_ids <- character()
     org_names <- character()
     for (org in organizations) {
