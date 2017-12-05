@@ -4,10 +4,14 @@
 \alias{orgs}
 \title{Get organizations ids}
 \usage{
-orgs(organizations)
+orgs(organizations, fixed = TRUE, ignore.case = TRUE)
 }
 \arguments{
 \item{organizations}{Character vector of organizations names or the beginnings of their names.}
+
+\item{fixed}{Logical. If TRUE, pattern is a string to be matched as is. If FALSE, regular expression is used.}
+
+\item{ignore.case}{if FALSE, the pattern matching is case sensitive and if TRUE, case is ignored during matching.}
 }
 \description{
 Function to get organizations codes ("edrpous") given their names (or the beginnings of their names)

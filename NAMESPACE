@@ -3,6 +3,6 @@
 export(download_organisations)
 export(last_date)
 export(orgs)
-export(regions_ids)
+export(regs)
 export(top100)
 export(transactions)
