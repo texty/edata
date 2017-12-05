@@ -17,7 +17,8 @@ org_col_type <- readr::cols (regDate = readr::col_date(format = ""),
                       cntSignAddCont = readr::col_integer(),
                       cntSignAct = readr::col_integer(),
                       cntSignPeny = readr::col_integer())
-temp_file <- paste0(tempfile(), '.csv')
+temp_dir <- tempdir()
+temp_file <- paste0(tempfile(tmpdir = temp_dir), '.csv')
 
 
 #' Download Ogranizations.
@@ -36,6 +37,9 @@ download_organisations <- function(filename) {
                           locale = readr::locale(encoding = "Windows-1251"), delim = ";",
                           col_types = org_col_type)
   file.remove("org_file.zip")
+  if (!dir.exists(temp_dir)) {
+    dir.create(temp_dir)
+  }
   write.csv(organisations, filename, row.names = FALSE)
 }
 
