@@ -70,11 +70,11 @@ request2df <- function(url, q = list()) {
 #'
 #' Function to get organizations codes ("edrpous") given their names (or the beginnings of their names)
 #' @param organizations Character vector of organizations names or the beginnings of their names.  
-#' @keywords organizations, org_ids
+#' @keywords organizations, orgs
 #' @export
 #' @examples 
-#' orgs_ids()
-orgs_ids <- function(organizations) {
+#' orgs()
+orgs <- function(organizations) {
   if (!file.exists(temp_file)) {
     download_organisations(temp_file)
   }
@@ -83,9 +83,9 @@ orgs_ids <- function(organizations) {
   org_names <- character()
   for (org in organizations) {
     orgs$starts_with <- startsWith(orgs$orgName, org)
-    orgs <- orgs[orgs$starts_with,]
-    new_ids <- orgs$orgCode
-    org_names <- c(org_names, orgs$orgName)
+    orgs_ <- orgs[orgs$starts_with,]
+    new_ids <- orgs_$orgCode
+    org_names <- c(org_names, orgs_$orgName)
     org_ids <- c(org_ids, new_ids)
   }
   org_ids <- unique(org_ids)
