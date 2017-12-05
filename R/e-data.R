@@ -116,21 +116,28 @@ add_mult_parameters <- function(params, param_name) {
 #'
 #' Function to get regions' ids given their names (or the beginnings of their names)
 #' @param regions Character vector of regions names or the beginnings of their names. If not specified, the function returns named vector with all regions' ids.
-#' @keywords regions, regions_ids
+#' @param fixed Logical. If TRUE, pattern is a string to be matched as is. If FALSE, regular expression is used.
+#' @param ignore.case if FALSE, the pattern matching is case sensitive and if TRUE, case is ignored during matching. 
+#' @keywords regions, regs
 #' @export
 #' @examples 
-#' regions_ids()
-regions_ids <- function(regions = NULL) {
+#' regs
+regs <- function(regions = NULL, fixed = TRUE, ignore.case = TRUE) {
   regions_url <- "http://api.spending.gov.ua/api/v2/regions"
   regions_df <- request2df(regions_url)  
   reg_ids <- character()
   reg_names <- character()
   if (length(regions) > 0) {
     for (r in regions) {
-      regions_df$starts_with <- startsWith(regions_df$regionName, r)
-      regions_df <- regions_df[regions_df$starts_with,]
-      new_ids <- regions_df$regionCode
-      reg_names <- c(reg_names, regions_df$regionName)
+      if (fixed) {
+        regions_df$selected <- stringr::str_detect(regions_df$regionName, stringr::fixed(r, ignore_case = ignore.case))
+      } else {
+        regions_df$selected <- stringr::str_detect(regions_df$regionName, stringr::coll(r, ignore_case = ignore.case, locale = "ukr"))
+      }
+      
+      regions_df_ <- regions_df[regions_df$selected,]
+      new_ids <- regions_df_$regionCode
+      reg_names <- c(reg_names, regions_df_$regionName)
       reg_ids <- c(reg_ids, new_ids)
     }
   } else {
