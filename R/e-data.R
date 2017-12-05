@@ -70,11 +70,13 @@ request2df <- function(url, q = list()) {
 #'
 #' Function to get organizations codes ("edrpous") given their names (or the beginnings of their names)
 #' @param organizations Character vector of organizations names or the beginnings of their names.  
+#' @param fixed Logical. If TRUE, pattern is a string to be matched as is. If FALSE, regular expression is used.
+#' @param ignore.case if FALSE, the pattern matching is case sensitive and if TRUE, case is ignored during matching. 
 #' @keywords organizations, orgs
 #' @export
 #' @examples 
 #' orgs()
-orgs <- function(organizations) {
+orgs <- function(organizations, fixed = TRUE, ignore.case = TRUE) {
   if (!file.exists(temp_file)) {
     download_organisations(temp_file)
   }
@@ -82,8 +84,12 @@ orgs <- function(organizations) {
   org_ids <- character()
   org_names <- character()
   for (org in organizations) {
-    orgs$starts_with <- startsWith(orgs$orgName, org)
-    orgs_ <- orgs[orgs$starts_with,]
+    if (fixed) {
+      orgs$selected <- stringr::str_detect(orgs$orgName, stringr::fixed(org, ignore_case = ignore.case))
+    } else {
+      orgs$selected <- stringr::str_detect(orgs$orgName, stringr::coll(org, ignore_case = ignore.case, locale = "ukr"))
+    }
+    orgs_ <- orgs[orgs$selected,]
     new_ids <- orgs_$orgCode
     org_names <- c(org_names, orgs_$orgName)
     org_ids <- c(org_ids, new_ids)
@@ -175,10 +181,10 @@ transactions <- function(payers_edrpous = NULL, recievers_edrpous = NULL,
         enddate <- startdate
       } else {
         if (is.null(startdate)) {
-          cat(paste0("Loading transactions for the ", enddate))
+          cat(paste0("Loading transactions for ", enddate))
           startdate <- enddate
         } else {
-          cat(paste0("Loading transactions for the ", startdate))
+          cat(paste0("Loading transactions for ", startdate))
           enddate <- startdate
         }
       }
