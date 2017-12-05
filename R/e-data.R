@@ -1,4 +1,4 @@
-org_col_type <- cols (regDate = col_date(format = ""),
+org_col_type <- readr::cols (regDate = col_date(format = ""),
                       orgCode = col_character(),
                       orgName = col_character(),
                       kopfg = col_character(),
