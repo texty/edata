@@ -54,8 +54,8 @@ transactions_format <- function(df) {
 }
 
 request2df <- function(url, q = list()) {
-  q_request <- GET(url = url, query = q)
-  q_content <- content(q_request)
+  q_request <- httr::GET(url = url, query = q)
+  q_content <- httr::content(q_request)
   if (length(q_content) > 0) {
     q_content <- lapply(q_content, nulls_to_nas)
     df <- data.frame(matrix(unlist(q_content), byrow = T, ncol = length(q_content[[1]])), stringsAsFactors = F)
