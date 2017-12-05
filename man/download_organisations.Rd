@@ -4,10 +4,10 @@
 \alias{download_organisations}
 \title{Download Ogranizations.}
 \usage{
-download_organisations(folder = ".")
+download_organisations(filename)
 }
 \arguments{
-\item{folder}{Folder, where you want to save .csv file with ogranizations. Defaults to ".".}
+\item{filename}{Full path to file where you want organisations to be saved.}
 }
 \description{
 Function to download information on all registered organizations on website.

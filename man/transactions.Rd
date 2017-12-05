@@ -2,15 +2,15 @@
 % Please edit documentation in R/e-data.R
 \name{transactions}
 \alias{transactions}
-\title{Get 100 biggest transactions}
+\title{Get transactions}
 \usage{
-transactions(payers_edrpous = NULL, recipt_edrpous = NULL, regions = NULL,
-  startdate = NULL, enddate = NULL)
+transactions(payers_edrpous = NULL, recievers_edrpous = NULL,
+  regions = NULL, startdate = NULL, enddate = NULL)
 }
 \arguments{
 \item{payers_edrpous}{Character vector of payers' codes ("edrpous") in looked transactions.}
 
-\item{recipt_edrpous}{Character vector of receivers' codes ("edrpous") in looked transactions}
+\item{recievers_edrpous}{Character vector of receivers' codes ("edrpous") in looked transactions}
 
 \item{regions}{Integer vector of regions ids. If not present, the function will return transactions in every region and on the national level.}
 
@@ -19,7 +19,7 @@ transactions(payers_edrpous = NULL, recipt_edrpous = NULL, regions = NULL,
 \item{enddate}{The last date of wanted period. Format - "yyyy-mm-dd"}
 }
 \description{
-Function to load 100 biggest transactions within regions or anywhere.
+Function to load all transactions, limited by payers' and / or receivers' codes or within sinlge day
 }
 \examples{
 transactions()
