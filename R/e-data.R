@@ -1,6 +1,3 @@
-library(httr)
-library(readr)
-
 org_col_type <- cols (regDate = col_date(format = ""),
                       orgCode = col_character(),
                       orgName = col_character(),
@@ -20,26 +17,26 @@ org_col_type <- cols (regDate = col_date(format = ""),
                       cntSignAddCont = col_integer(),
                       cntSignAct = col_integer(),
                       cntSignPeny = col_integer())
+temp_file <- paste0(tempfile(), '.csv')
+
 
 #' Download Ogranizations.
 #'
 #' Function to download information on all registered organizations on website.
-#' @param folder Folder, where you want to save .csv file with ogranizations. Defaults to ".".
+#' @param filename Full path to file where you want organisations to be saved.
 #' @keywords download_organisations
 #' @export
 #' @examples 
 #' download_organisations()
-download_organisations <- function(folder = ".") {
+download_organisations <- function(filename) {
   url <- "http://api.spending.gov.ua/api/v2/stat/organizations/csv"
   download.file(url, "org_file.zip")
   file_path <- unzip("org_file.zip")
-  organisations <- read_delim(file_path, skip = 1, 
+  organisations <- readr::read_delim(file_path, skip = 1, 
                           locale = locale(encoding = "Windows-1251"), delim = ";",
                           col_types = org_col_type)
-  file.remove(c("org_file.zip", file_path))
-  org_fullfilename <- file.path(folder, "organizations.csv")
-  write.csv(organisations, org_fullfilename, row.names = FALSE)
-  cat(paste0("The list of currently registered organizations is saved at ", org_fullfilename))
+  file.remove("org_file.zip")
+  write.csv(organisations, filename, row.names = FALSE)
 }
 
 transactions_format <- function(df) {
@@ -69,31 +66,28 @@ request2df <- function(url, q = list()) {
 #'
 #' Function to get organizations codes ("edrpous") given their names (or the beginnings of their names)
 #' @param organizations Character vector of organizations names or the beginnings of their names.  
-#' @param filename The path to file with registered organizations. Default - "organizations.csv"
 #' @keywords organizations, org_ids
 #' @export
 #' @examples 
 #' orgs_ids()
-orgs_ids <- function(organizations, filename = "organizations.csv") {
-  if (file.exists(filename)) {
-    orgs <- read_csv(filename, col_types = org_col_type)
-    org_ids <- character()
-    org_names <- character()
-    for (org in organizations) {
-      orgs$starts_with <- startsWith(orgs$orgName, org)
-      orgs <- orgs[orgs$starts_with,]
-      new_ids <- orgs$orgCode
-      org_names <- c(org_names, orgs$orgName)
-      org_ids <- c(org_ids, new_ids)
-    }
-    org_ids <- unique(org_ids)
-    org_names <- unique(org_names)
-    names(org_ids) <- org_names
-    org_ids
-  } else {
-    stop(paste0("Cannot find file ", filename, 
-                "\nPlease, check the path or run \"download_organizations\" function"))
+orgs_ids <- function(organizations) {
+  if (!file.exists(temp_file)) {
+    download_organisations(temp_file)
   }
+  orgs <- readr::read_csv(temp_file, col_types = org_col_type)
+  org_ids <- character()
+  org_names <- character()
+  for (org in organizations) {
+    orgs$starts_with <- startsWith(orgs$orgName, org)
+    orgs <- orgs[orgs$starts_with,]
+    new_ids <- orgs$orgCode
+    org_names <- c(org_names, orgs$orgName)
+    org_ids <- c(org_ids, new_ids)
+  }
+  org_ids <- unique(org_ids)
+  org_names <- unique(org_names)
+  names(org_ids) <- org_names
+  org_ids
 }
 
 nulls_to_nas <- function(l) {
@@ -154,11 +148,11 @@ top100 <- function(regions = NULL) {
   transactions_format(df)
 }
 
-#' Get 100 biggest transactions
+#' Get transactions 
 #'
-#' Function to load 100 biggest transactions within regions or anywhere.
+#' Function to load all transactions, limited by payers' and / or receivers' codes or within sinlge day
 #' @param payers_edrpous Character vector of payers' codes ("edrpous") in looked transactions.  
-#' @param recipt_edrpous Character vector of receivers' codes ("edrpous") in looked transactions
+#' @param recievers_edrpous Character vector of receivers' codes ("edrpous") in looked transactions
 #' @param regions Integer vector of regions ids. If not present, the function will return transactions in every region and on the national level.
 #' @param startdate The first date of wanted period. Format - "yyyy-mm-dd"
 #' @param enddate The last date of wanted period. Format - "yyyy-mm-dd"
@@ -166,10 +160,10 @@ top100 <- function(regions = NULL) {
 #' @export
 #' @examples 
 #' transactions()
-transactions <- function(payers_edrpous = NULL, recipt_edrpous = NULL,
+transactions <- function(payers_edrpous = NULL, recievers_edrpous = NULL,
                          regions = NULL,  startdate = NULL, enddate = NULL)
 {
-  if (is.null(recipt_edrpous) & is.null(payers_edrpous)) {
+  if (is.null(recievers_edrpous) & is.null(payers_edrpous)) {
     if (is.null(startdate) | is.null(enddate)) {
       if (is.null(startdate) & is.null(enddate)) {
         cat("Loading transactions for the last date available...")
@@ -192,15 +186,22 @@ transactions <- function(payers_edrpous = NULL, recipt_edrpous = NULL,
   } 
   url <- "http://api.spending.gov.ua/api/v2/api/transactions/?"
   url <- paste0(url, add_mult_parameters(payers_edrpous, "payers_edrpous"))
-  url <- paste0(url, add_mult_parameters(recipt_edrpous, "recipt_edrpous"))
+  url <- paste0(url, add_mult_parameters(recievers_edrpous, "recipt_edrpous"))
   url <- paste0(url, add_mult_parameters(regions, "regions"))
   df <- request2df(url, q = list(startdate = startdate, enddate = enddate))
   transactions_format(df)
 }
 
-
+#' Get the date of the latest transaction
+#'
+#' Function to load the date of the latest transaction in spending.gov.ua database
+#' @keywords last_date
+#' @export
+#' @examples 
+#' last_date()
 last_date <- function() {
   url <- "http://api.spending.gov.ua/api/v2/api/transactions/lastload"
   df <- request2df(url)
   df[,1]
 }
+
