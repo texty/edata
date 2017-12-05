@@ -33,7 +33,7 @@ download_organisations <- function(filename) {
   download.file(url, "org_file.zip")
   file_path <- unzip("org_file.zip")
   organisations <- readr::read_delim(file_path, skip = 1, 
-                          locale = locale(encoding = "Windows-1251"), delim = ";",
+                          locale = readr::locale(encoding = "Windows-1251"), delim = ";",
                           col_types = org_col_type)
   file.remove("org_file.zip")
   write.csv(organisations, filename, row.names = FALSE)
