@@ -21,6 +21,7 @@ To install and load:
 
 To get all transactions of Kyiv city council:
 
+>library(tidyverse)
 
 >kyivrada_transactions <- 
 
