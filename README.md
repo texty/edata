@@ -19,9 +19,9 @@ To install and load:
 
 **Examples**
 
-To get all transactions of Kyiv city council:
-
 >library(tidyverse)
+
+To get all transactions of Kyiv city council:
 
 >kyivrada_transactions <- 
 
