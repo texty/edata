@@ -33,9 +33,9 @@ download_organisations <- function(filename) {
   url <- "http://api.spending.gov.ua/api/v2/stat/organizations/csv"
   download.file(url, "org_file.zip", mode="wb")
   file_path <- unzip("org_file.zip")
-  organisations <- readr::read_delim(file_path, skip = 1, 
-                          locale = readr::locale(encoding = "Windows-1251"), delim = ";",
-                          col_types = org_col_type)
+  organisations <- read.csv(file_path, skip = 1, 
+                          encoding = "Windows-1251", sep = ";",
+                          colClasses = org_col_type)
   file.remove("org_file.zip")
   if (!dir.exists(temp_dir)) {
     dir.create(temp_dir)
