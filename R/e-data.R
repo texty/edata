@@ -31,7 +31,7 @@ temp_file <- paste0(tempfile(tmpdir = temp_dir), '.csv')
 #' download_organisations()
 download_organisations <- function(filename) {
   url <- "http://api.spending.gov.ua/api/v2/stat/organizations/csv"
-  download.file(url, "org_file.zip")
+  download.file(url, "org_file.zip", mode="wb")
   file_path <- unzip("org_file.zip")
   organisations <- readr::read_delim(file_path, skip = 1, 
                           locale = readr::locale(encoding = "Windows-1251"), delim = ";",
