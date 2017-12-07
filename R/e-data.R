@@ -35,7 +35,7 @@ download_organisations <- function(filename) {
   file_path <- unzip("org_file.zip")
   organisations <- read.csv(file_path, skip = 1, 
                           encoding = "Windows-1251", sep = ";",
-                          colClasses = org_col_type)
+                          colClasses = org_col_type, stringsAsFactors=F)
   file.remove("org_file.zip")
   if (!dir.exists(temp_dir)) {
     dir.create(temp_dir)
