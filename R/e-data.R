@@ -34,13 +34,14 @@ download_organisations <- function(filename) {
   download.file(url, "org_file.zip", mode="wb")
   file_path <- unzip("org_file.zip")
   organisations <- readr::read_delim(file_path, skip = 1, 
-                          locale = readr::locale(encoding = "Windows-1251"), delim = ";",
+                          locale = readr::locale(encoding = "UTF-8"), delim = ";",
                           col_types = org_col_type)
   file.remove("org_file.zip")
   if (!dir.exists(temp_dir)) {
     dir.create(temp_dir)
   }
-  write.csv(organisations, filename, row.names = FALSE)
+  con <- file(filename, encoding = "UTF-8")
+  write.csv(organisations, file = con, row.names = FALSE)
 }
 
 transactions_format <- function(df) {
