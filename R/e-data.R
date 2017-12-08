@@ -80,7 +80,7 @@ orgs <- function(organizations, fixed = TRUE, ignore.case = TRUE) {
   if (!file.exists(temp_file)) {
     download_organisations(temp_file)
   }
-  orgs <- readr::read_csv(temp_file, col_types = org_col_type)
+  orgs <- read.csv(temp_file)
   org_ids <- character()
   org_names <- character()
   for (org in organizations) {
