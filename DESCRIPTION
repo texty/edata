@@ -7,8 +7,8 @@ Date: 2017-11-29
 Authors@R: c(person("Pavlo Myronov", "name", role=c("aut"), email="paul.myronov@gmail.com"))
 Author: yourname [aut, cre]
 Maintainer: Pavlo Myronov <paul.myronov@gmail.com>
-URL: https://github.com/yourgithub/edata
-BugReports: https://github.com/yourgithub/edata/issues
+URL: https://github.com/texty/edecl
+BugReports: https://github.com/texty/edecl/issues
 License: MIT + file LICENSE
 Depends:
     R (>= 3.0.0)
