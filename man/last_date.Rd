@@ -7,7 +7,7 @@
 last_date()
 }
 \description{
-Function to load the date of the latest transaction in spending.gov.ua database
+Function to load the date of the latest updates in spending.gov.ua database
 }
 \examples{
 last_date()

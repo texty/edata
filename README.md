@@ -1,8 +1,8 @@
 # edata
-**API wrapper for E-Data (spending.gov.ua). Uses API version 2.0. **
+**API wrapper for E-Data (spending.gov.ua). Uses API Transactions version 2.0. **
 
 To install and load:
->devtools::install_git("https://github.com/texty/edata")
+>devtools::install_github("texty/edata")
 
 >library(edata)
 
@@ -21,13 +21,13 @@ To install and load:
 
 >library(tidyverse)
 
-To get all transactions of Kyiv city council:
+To get all transactions of Kyiv city council for the first 3 months of 2018:
 
 >kyivrada_transactions <- 
 
 >  orgs("Київська міська рада") %>%
 
->  transactions()
+>  transactions(startdate = "2018-01-01", enddate = "2018-03-31")
 
 To get top100 transactions in Kharkiv oblast:
 
