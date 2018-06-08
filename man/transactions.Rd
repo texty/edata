@@ -5,7 +5,7 @@
 \title{Get transactions}
 \usage{
 transactions(payers_edrpous = NULL, recievers_edrpous = NULL,
-  regions = NULL, startdate = NULL, enddate = NULL)
+  regions = NULL, startdate = NULL, enddate = NULL, source = NULL)
 }
 \arguments{
 \item{payers_edrpous}{Character vector of payers' codes ("edrpous") in looked transactions.}
@@ -17,6 +17,8 @@ transactions(payers_edrpous = NULL, recievers_edrpous = NULL,
 \item{startdate}{The first date of wanted period. Format - "yyyy-mm-dd"}
 
 \item{enddate}{The last date of wanted period. Format - "yyyy-mm-dd"}
+
+\item{source}{The source of transactions. At the moment (June 2018) there are two possible values: "DKSU" (Treasury) or "UZ" (Railway)}
 }
 \description{
 Function to load all transactions, limited by payers' and / or receivers' codes or within sinlge day

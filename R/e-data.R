@@ -56,11 +56,16 @@ transactions_format <- function(df) {
 request2df <- function(url, q = list()) {
   q_request <- httr::GET(url = url, query = q)
   q_content <- httr::content(q_request)
+  #print(q_content)
   if (length(q_content) > 0) {
-    q_content <- lapply(q_content, nulls_to_nas)
-    df <- data.frame(matrix(unlist(q_content), byrow = T, ncol = length(q_content[[1]])), stringsAsFactors = F)
-    names(df) <- names(q_content[[1]])
-    df
+    if (is.null(q_content$errorMessage)) {
+      q_content <- lapply(q_content, nulls_to_nas)
+      df <- data.frame(matrix(unlist(q_content), byrow = T, ncol = length(q_content[[1]])), stringsAsFactors = F)
+      names(df) <- names(q_content[[1]])
+      df
+    } else {
+      stop(q_content$errorMessage)
+    }
   } else {
     NULL
   }
@@ -173,52 +178,31 @@ top100 <- function(regions = NULL) {
 #' @param regions Integer vector of regions ids. If not present, the function will return transactions in every region and on the national level.
 #' @param startdate The first date of wanted period. Format - "yyyy-mm-dd"
 #' @param enddate The last date of wanted period. Format - "yyyy-mm-dd"
+#' @param source The source of transactions. At the moment (June 2018) there are two possible values: "DKSU" (Treasury) or "UZ" (Railway)
 #' @keywords transactions
 #' @export
 #' @examples 
 #' transactions()
 transactions <- function(payers_edrpous = NULL, recievers_edrpous = NULL,
-                         regions = NULL,  startdate = NULL, enddate = NULL)
+                         regions = NULL,  startdate = NULL, enddate = NULL, source = NULL)
 {
-  if (is.null(recievers_edrpous) & is.null(payers_edrpous)) {
-    if (is.null(startdate) | is.null(enddate)) {
-      if (is.null(startdate) & is.null(enddate)) {
-        cat("Loading transactions for the last date available...")
-        startdate <- last_date()
-        enddate <- startdate
-      } else {
-        if (is.null(startdate)) {
-          cat(paste0("Loading transactions for ", enddate))
-          startdate <- enddate
-        } else {
-          cat(paste0("Loading transactions for ", startdate))
-          enddate <- startdate
-        }
-      }
-    } else {
-      if ( startdate != enddate) {
-        stop("Either request transactions for 1 day or \"payers_edrpous\" or \"recipt_edrpous\" or both must be present in request.")
-      }
-    }
-  } 
   url <- "http://api.spending.gov.ua/api/v2/api/transactions/?"
   url <- paste0(url, add_mult_parameters(payers_edrpous, "payers_edrpous"))
   url <- paste0(url, add_mult_parameters(recievers_edrpous, "recipt_edrpous"))
   url <- paste0(url, add_mult_parameters(regions, "regions"))
-  df <- request2df(url, q = list(startdate = startdate, enddate = enddate))
+  df <- request2df(url, q = list(startdate = startdate, enddate = enddate, source = source))
   transactions_format(df)
 }
 
 #' Get the date of the latest transaction
 #'
-#' Function to load the date of the latest transaction in spending.gov.ua database
+#' Function to load the date of the latest updates in spending.gov.ua database
 #' @keywords last_date
 #' @export
 #' @examples 
 #' last_date()
 last_date <- function() {
   url <- "http://api.spending.gov.ua/api/v2/api/transactions/lastload"
-  df <- request2df(url)
-  df[,1]
+  request2df(url)
 }
 
